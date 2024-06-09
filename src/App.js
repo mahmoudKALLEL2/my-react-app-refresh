@@ -17,9 +17,29 @@ function App() {
         run();
     }, []);
 
+    const incrementVersion = (version) => {
+        const parts = version.split('.');
+        let major = parseInt(parts[0], 10);
+        let minor = parseInt(parts[1], 10);
+        let patch = parseInt(parts[2], 10);
+
+        patch += 1;
+        if (patch >= 10) {
+            patch = 0;
+            minor += 1;
+            if (minor >= 10) {
+                minor = 0;
+                major += 1;
+            }
+        }
+
+        return `${major}.${minor}.${patch}`;
+    };
+
     const updateFirmware = () => {
         if (device) {
-            device.update_firmware('2.0.0');
+            const newVersion = incrementVersion(firmwareVersion);
+            device.update_firmware(newVersion);
             setFirmwareVersion(device.get_firmware_version());
         }
     };
